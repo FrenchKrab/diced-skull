@@ -1,0 +1,78 @@
+[gd_resource type="Theme" load_steps=14 format=2]
+
+[ext_resource path="res://dicedhead/ui/fonts/ESKARGOT.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://dicedhead/ui/fonts/EuropeanTypewriter.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://dicedhead/sprites/ui/progress_fg.png" type="Texture" id=3]
+[ext_resource path="res://dicedhead/sprites/ui/progress_bg.png" type="Texture" id=4]
+
+[sub_resource type="DynamicFont" id=2]
+size = 20
+outline_size = 2
+outline_color = Color( 0.172549, 0.172549, 0.172549, 1 )
+font_data = ExtResource( 2 )
+
+[sub_resource type="StyleBoxTexture" id=7]
+texture = ExtResource( 3 )
+region_rect = Rect2( 0, 0, 102, 32 )
+margin_left = 47.4059
+margin_right = 52.7154
+
+[sub_resource type="StyleBoxTexture" id=8]
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 193, 32 )
+
+[sub_resource type="StyleBoxTexture" id=9]
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 192.791, 32 )
+margin_left = 1.26667
+margin_right = 2.73333
+margin_top = 6.33333
+margin_bottom = 3.53333
+
+[sub_resource type="DynamicFont" id=3]
+size = 20
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 28
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 120
+outline_size = 10
+outline_color = Color( 0.392157, 0, 0, 1 )
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=4]
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=1]
+size = 48
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 1 )
+
+[resource]
+ButtonInvisible/base_type = "Button"
+ButtonInvisible/styles/normal = null
+EffectLabel1/base_type = "Label"
+EffectLabel1/colors/font_color = Color( 1, 0, 0, 1 )
+EffectLabel1/colors/font_color_shadow = Color( 0, 0, 0, 1 )
+EffectLabel1/fonts/font = SubResource( 2 )
+HScrollBar/styles/grabber = SubResource( 7 )
+HScrollBar/styles/scroll = SubResource( 8 )
+HSlider/styles/slider = SubResource( 9 )
+Label/fonts/font = SubResource( 3 )
+LabelBig/base_type = "Label"
+LabelBig/fonts/font = SubResource( 5 )
+LabelSplash/base_type = "Label"
+LabelSplash/colors/font_color = Color( 1, 0.956863, 0.396078, 1 )
+LabelSplash/fonts/font = SubResource( 6 )
+RichTextLabel/fonts/normal_font = SubResource( 4 )
+Title1/base_type = "Label"
+Title1/fonts/font = SubResource( 1 )

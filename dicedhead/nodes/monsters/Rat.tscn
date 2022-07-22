@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://dicedhead/nodes/monsters/Monster.tscn" type="PackedScene" id=1]
+
+[node name="Rat" instance=ExtResource( 1 )]
+Life = 2.0
+Speed = 100.0
+OptimalDistance = 220.0
+CastDelay = 2.0
+RandomAbilityOrder = true

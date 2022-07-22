@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/162456__kastenfrosch__dice(1).mp3-f2f12076fd41abec0ee9aba46fe07f96.mp3str"
+
+[deps]
+
+source_file="res://dicedhead/sfx/rolling/162456__kastenfrosch__dice(1).mp3"
+dest_files=[ "res://.import/162456__kastenfrosch__dice(1).mp3-f2f12076fd41abec0ee9aba46fe07f96.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

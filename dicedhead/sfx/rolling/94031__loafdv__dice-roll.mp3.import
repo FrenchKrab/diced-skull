@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/94031__loafdv__dice-roll.mp3-e8d572a8a903f023d42f1562c41b00dc.mp3str"
+
+[deps]
+
+source_file="res://dicedhead/sfx/rolling/94031__loafdv__dice-roll.mp3"
+dest_files=[ "res://.import/94031__loafdv__dice-roll.mp3-e8d572a8a903f023d42f1562c41b00dc.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

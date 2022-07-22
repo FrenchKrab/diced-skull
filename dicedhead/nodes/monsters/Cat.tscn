@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://dicedhead/sprites/monsters/cat.png" type="Texture" id=1]
+[ext_resource path="res://dicedhead/nodes/monsters/Monster.tscn" type="PackedScene" id=2]
+
+[node name="Monster" instance=ExtResource( 2 )]
+Life = 15.0
+Speed = 120.0
+OptimalDistance = 150.0
+Intensity = 1.5
+RandomAbilityOrder = true
+Abilities = PoolStringArray( "bonus_bdice1", "bonus_sword1", "bonus_sdice1" )
+KillWorth = 10
+
+[node name="Shadow" parent="." index="0"]
+position = Vector2( 1, 66 )
+scale = Vector2( 1.815, 1 )
+
+[node name="Sprite" parent="." index="2"]
+texture = ExtResource( 1 )

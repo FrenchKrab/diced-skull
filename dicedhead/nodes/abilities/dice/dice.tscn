@@ -1,0 +1,111 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://dicedhead/sprites/misc/dice/dice3.png" type="Texture" id=1]
+[ext_resource path="res://dicedhead/sprites/misc/dice/dice1.png" type="Texture" id=2]
+[ext_resource path="res://dicedhead/nodes/abilities/dice/DiceAbility.cs" type="Script" id=3]
+[ext_resource path="res://dicedhead/sfx/Explosion 6(1).wav" type="AudioStream" id=4]
+[ext_resource path="res://dicedhead/sfx/Laser_shoot 6.wav" type="AudioStream" id=5]
+[ext_resource path="res://dicedhead/sfx/Explosion 15.wav" type="AudioStream" id=6]
+[ext_resource path="res://dicedhead/nodes/abilities/Hitbox.cs" type="Script" id=7]
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "roll"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 360.0 ]
+}
+
+[sub_resource type="Curve" id=4]
+_data = [ Vector2( 0, 0.831288 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=5]
+curve = SubResource( 4 )
+
+[sub_resource type="ParticlesMaterial" id=6]
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+angle = 720.0
+angle_random = 1.0
+scale = 0.25
+scale_curve = SubResource( 5 )
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 6.0
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 14.0
+
+[node name="dice" type="KinematicBody2D"]
+collision_layer = 128
+script = ExtResource( 3 )
+AllyColor = Color( 0.215686, 0.0470588, 0.584314, 1 )
+MonsterColor = Color( 1, 0.258824, 0, 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 0.25, 0.25 )
+texture = ExtResource( 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "roll"
+anims/RESET = SubResource( 2 )
+anims/roll = SubResource( 3 )
+
+[node name="Particles2D" type="Particles2D" parent="."]
+z_index = -1
+amount = 10
+lifetime = 0.5
+local_coords = false
+process_material = SubResource( 6 )
+texture = ExtResource( 2 )
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 128
+script = ExtResource( 7 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 1 )
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource( 7 )
+
+[node name="FireAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 4 )
+volume_db = -5.0
+
+[node name="BounceAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 5 )
+volume_db = -5.0
+
+[node name="DestroyedAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 6 )
+volume_db = 10.0
+max_distance = 500.0
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true

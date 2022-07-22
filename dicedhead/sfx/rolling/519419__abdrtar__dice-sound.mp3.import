@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/519419__abdrtar__dice-sound.mp3-1c5045f5b8785815755dbcff62ecf8b1.mp3str"
+
+[deps]
+
+source_file="res://dicedhead/sfx/rolling/519419__abdrtar__dice-sound.mp3"
+dest_files=[ "res://.import/519419__abdrtar__dice-sound.mp3-1c5045f5b8785815755dbcff62ecf8b1.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

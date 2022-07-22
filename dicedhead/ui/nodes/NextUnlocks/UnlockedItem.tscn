@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://dicedhead/sprites/abilities/dice2.png" type="Texture" id=1]
+[ext_resource path="res://dicedhead/ui/nodes/NextUnlocks/UnlockedItem.cs" type="Script" id=2]
+
+[node name="UnlockedItem" type="HBoxContainer"]
+margin_left = 88.0
+margin_right = 199.0
+margin_bottom = 64.0
+script = ExtResource( 2 )
+
+[node name="Label2" type="Label" parent="."]
+margin_top = 25.0
+margin_right = 35.0
+margin_bottom = 39.0
+text = " Die I"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_left = 39.0
+margin_right = 101.0
+margin_bottom = 64.0
+texture = ExtResource( 1 )
