@@ -6,21 +6,12 @@ public abstract class Ability : KinematicBody2D
     [Signal]
     public delegate void AbilityEnded();
 
-    [Export]
-    public Color AllyColor = new Color(1,1,1);
 
-    [Export]
-    public Color MonsterColor = new Color(1,1,1);
+    public AbilityData AbilityData {get; private set;}
+    public IAbilityScalingFactors Scaling {get; private set;}
 
-    [Export]
-    public Color NeutralColor = new Color(1,1,1);
-
-
-    public AbilityData AbilityData;
 
     public abstract Hitbox Hitbox {get;}
-
-    public abstract float Damage {get; set;}
 
     protected Team TargetTeam;
 
@@ -29,11 +20,16 @@ public abstract class Ability : KinematicBody2D
         Hitbox.Connect(nameof(Hitbox.DealtDamage), this, nameof(OnDamageDealt));
     }
 
-
-    public virtual void Cast(Vector2 direction, Team targetTeam = Team.None)
+    public void SetupData(AbilityData data, IAbilityScalingFactors scaling)
     {
+        AbilityData = data;
+        Scaling = scaling;
+    }
+
+    public virtual void Cast(Vector2 position, Vector2 direction, Team targetTeam = Team.None)
+    {
+        GlobalPosition = position;
         TargetTeam = targetTeam;
-        SetCollisionMaskBit(0, AbilityData.CollideWithWorld);
         Visible = true;
     }
 
@@ -47,22 +43,13 @@ public abstract class Ability : KinematicBody2D
         EmitSignal(nameof(AbilityEnded));
     }
 
-    protected void SetTeam(Sprite sprite)
+    protected virtual void UpdateTeam()
     {
-        bool damagePlayer = TargetTeam.HasFlag(Team.Hero) || (TargetTeam == Team.None && AbilityData.IntensityValue > 0);
-        bool damageMonsters = TargetTeam.HasFlag(Team.Monsters) || (TargetTeam == Team.None && AbilityData.IntensityValue <= 0);
+        bool damagePlayer = TargetTeam.HasFlag(Team.Hero);
+        bool damageMonsters = TargetTeam.HasFlag(Team.Monsters);
 
         Hitbox.CollisionMask = 0;
         Hitbox.SetCollisionMaskBit(1, damagePlayer);
         Hitbox.SetCollisionMaskBit(2, damageMonsters);
-
-        Color c;
-        if (!damagePlayer && !damageMonsters)
-            c = NeutralColor;
-        else if (damageMonsters)
-            c = AllyColor;
-        else
-            c = MonsterColor;
-        sprite.Modulate = c;
     }
 }

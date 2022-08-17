@@ -1,10 +1,11 @@
 using Godot;
 using System;
 
-public class AbilityCaster : Node2D
+public class AutoCaster : Node2D
 {
-    private AbilityData _data;
-    private AbilityData.CombatStats _finalStats;
+    private AutoCastableAbilityData _data;
+    private IAbilityScalingFactors _scaling;
+    private AutoCastableAbilityData.Stats _finalStats;
 
 
     private Timer _timer => GetNode<Timer>("Timer");
@@ -15,10 +16,11 @@ public class AbilityCaster : Node2D
     private Team _targetTeam = Team.None;
 
 
-    public void SetupAbility(AbilityData data, AbilityData.CombatStats finalStats)
+    public void SetupAbility(AutoCastableAbilityData data, IAbilityScalingFactors scaling)
     {
         _data = data;
-        _finalStats = finalStats;
+        _scaling = scaling;
+        _finalStats = data.GetScaledAutoCastableStats(_scaling);
     }
 
     private void LockOnTargetIfNecessary()
@@ -47,23 +49,21 @@ public class AbilityCaster : Node2D
         }
 
         LockOnTargetIfNecessary();
-        for (int i = 0; i < _data.SimultaneousShoots; ++i)
+        for (int i = 0; i < _finalStats.SimultaneousShots; ++i)
         {
             float angleOffset;
-            if (_data.SimultaneousShoots == 1)
+            if (_finalStats.SimultaneousShots == 1)
                 angleOffset = 0;
             else
             {
-                float angleCoverageRad = Mathf.Deg2Rad(_data.SimultaneousAngleCoverage);
-                angleOffset = Mathf.Lerp(-angleCoverageRad/2,+angleCoverageRad/2,1f*i/(_data.SimultaneousShoots-1));
+                float angleCoverageRad = Mathf.Deg2Rad(_finalStats.SimultaneousShotsAngleCoverage);
+                angleOffset = Mathf.Lerp(-angleCoverageRad/2,+angleCoverageRad/2,1f*i/(_finalStats.SimultaneousShots-1));
             }
 
-            var ability = AbilityPool.Singleton.GetAbility(_data);
+            var ability = AbilityPool.Singleton.GetPooledAbility(_data);
 
-            ability.GlobalPosition = GlobalPosition;
-            ability.Damage = _finalStats.Damage;
-
-            ability.Cast(GlobalTransform.x.Rotated(angleOffset), _targetTeam);
+            ability.SetupData(_data, _scaling);
+            ability.Cast(GlobalPosition, GlobalTransform.x.Rotated(angleOffset), _targetTeam);
         }
 
         _tickCount++;

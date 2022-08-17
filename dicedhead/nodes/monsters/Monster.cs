@@ -88,10 +88,10 @@ public class Monster : KinematicBody2D
             abilityNumber = _lastCastAbility;
         }
 
-        var caster = _abilityCasterPacked.Instance<AbilityCaster>();
+        var caster = _abilityCasterPacked.Instance<AutoCaster>();
         var data = AbilityLoader.GetAbility(Abilities[abilityNumber]);
         AddChild(caster);
-        caster.SetupAbility(data, data.GetRealStats(1, Intensity));
+        caster.SetupAbility(data, new DummyAbilityScalingFactors(Intensity));
         caster.LockOnTarget = _target;
         caster.Cast(Team.Hero);
     }

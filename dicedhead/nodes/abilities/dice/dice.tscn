@@ -2,7 +2,7 @@
 
 [ext_resource path="res://dicedhead/sprites/misc/dice/dice3.png" type="Texture" id=1]
 [ext_resource path="res://dicedhead/sprites/misc/dice/dice1.png" type="Texture" id=2]
-[ext_resource path="res://dicedhead/nodes/abilities/dice/DiceAbility.cs" type="Script" id=3]
+[ext_resource path="res://dicedhead/nodes/abilities/dice/ProjectileAbility.cs" type="Script" id=3]
 [ext_resource path="res://dicedhead/sfx/Explosion 6(1).wav" type="AudioStream" id=4]
 [ext_resource path="res://dicedhead/sfx/Laser_shoot 6.wav" type="AudioStream" id=5]
 [ext_resource path="res://dicedhead/sfx/Explosion 15.wav" type="AudioStream" id=6]

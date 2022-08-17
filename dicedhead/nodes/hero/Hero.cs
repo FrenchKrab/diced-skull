@@ -128,7 +128,7 @@ public class Hero : KinematicBody2D, IDamageable
         _abilityDelayTimer.Stop();
         EmitSignal(nameof(RollEnd));
 
-        var caster = _abilityCasterPacked.Instance<AbilityCaster>();
+        var caster = _abilityCasterPacked.Instance<AutoCaster>();
         var data = AbilityLoader.GetAbility(HeroState.Singleton.GetDiceAbility(_roll));
 
         if (data.IntensityValue > 0)
@@ -144,7 +144,7 @@ public class Hero : KinematicBody2D, IDamageable
         {
             GetNode<Node2D>("Cursor").AddChild(caster);
         }
-        caster.SetupAbility(data, HeroState.Singleton.GetFinalStats(_roll));
+        caster.SetupAbility(data, HeroState.Singleton.DiceState);
         caster.Cast();
     }
 }

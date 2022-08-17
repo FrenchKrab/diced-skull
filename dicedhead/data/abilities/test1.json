@@ -1,0 +1,13 @@
+{
+    "_class":"GenericProjectileData",
+    "name":"ok",
+    "icon":"dice2",
+    "intensity":0,
+    "resource":"generic_projectile/test1",
+    "stats_base":
+    {
+        "damage":1,
+        "rate":3,
+        "count":10
+    }
+}

@@ -3,7 +3,6 @@ using System;
 
 public class SwordAbility : Ability
 {
-
     private Sprite _sprite => GetNode<Sprite>("Sprite");
     public override Hitbox Hitbox => GetNode<Hitbox>("Sprite/Hitbox");
     private AnimationPlayer _animationPlayer => GetNode<AnimationPlayer>("AnimationPlayer");
@@ -12,7 +11,7 @@ public class SwordAbility : Ability
     private Timer _timer => GetNode<Timer>("Timer");
 
 
-    public override float Damage { get => Hitbox.Damage; set => Hitbox.Damage = value; }
+    public float Damage { get => Hitbox.Damage; set => Hitbox.Damage = value; }
 
 
 
@@ -23,13 +22,14 @@ public class SwordAbility : Ability
         _timer.Connect("timeout", this, nameof(MarkEnded));
     }
 
-    public override void Cast(Vector2 direction, Team targetTeam)
+    public override void Cast(Vector2 position, Vector2 direction, Team targetTeam)
     {
-        base.Cast(direction, targetTeam);
-        _timer.Start(AbilityData.Lifetime);
+        base.Cast(position, direction, targetTeam);
+        // TODO : MAKE THIS WORK
+        // _timer.Start(AbilityData.Lifetime);
         _animationPlayer.Play("slash");
         _slashAudio.Play();
-        SetTeam(_sprite);
+        UpdateTeam();
         LookAt(GlobalPosition + direction);
     }
 

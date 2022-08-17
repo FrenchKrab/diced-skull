@@ -1,152 +1,96 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
-public class AbilityData
+public abstract class AbilityData
 {
-    public enum ActionType
+    public const string InternalJsonFilesLocation = "res://dicedhead/data/abilities/";
+    private const string ParentKey = "_parent";
+    public const string ClassKey = "_class";
+    private const string AbilityIconLocation = "res://dicedhead/sprites/abilities/";
+
+    public AbilityData(IDictionary data, string id)
     {
-        Shoot,
-        Slash,
+        _internalData = data;
+        Id = id;
     }
 
-    public enum ObjectType
+    public readonly IDictionary _internalData;
+
+    public readonly string Id;
+    public string Name => Get<string>("name", "??? ability ???");
+    public string IconName => Get<string>("icon");
+    public string ClassName => Get<string>(ClassKey);
+    public Type Class => Type.GetType(ClassName);
+    public Texture IconTexture => ResourceLoader.Load<Texture>($"{AbilityIconLocation}/{IconName}.png");
+    public float IntensityValue => Get<float>("intensity", 0f);
+    public string NodeResourceName => Get<string>("resource");
+    public PackedScene NodeResourcePacked => ResourceLoader.Load<PackedScene>(NodeResourceName);
+
+
+    public abstract float GetEstimatedAttack(IAbilityScalingFactors state);
+
+
+
+    protected T Get<T>(string key)
     {
-        Dice,
-        Sword,
-        HommingMissile
+        return (T)_internalData[key];
     }
 
-    public struct CombatStats
+    protected T Get<T>(string key, T defaultValue)
     {
-        public static CombatStats One => new CombatStats(1,1,1);
-        public static CombatStats Zero => new CombatStats(0,0,0);
-
-        public CombatStats(float count, float rate, float damage)
-        {
-            Count = count;
-            Rate = rate;
-            Damage = damage;
-        }
-        public float Count;
-        public float Rate;
-        public float Damage;
-
-        public static CombatStats operator +(CombatStats a, CombatStats b)
-        {
-            return new CombatStats(a.Count + b.Count, a.Rate + b.Rate, a.Damage + b.Damage);
-        }
-
-        public static CombatStats operator -(CombatStats a, CombatStats b)
-        {
-            return a + (-b);
-        }
-
-
-        public static CombatStats operator *(CombatStats a, CombatStats b)
-        {
-            return new CombatStats(a.Count * b.Count, a.Rate * b.Rate, a.Damage * b.Damage);
-        }
-
-        public static CombatStats operator *(CombatStats a, float b)
-        {
-            return new CombatStats(a.Count * b, a.Rate * b, a.Damage * b);
-        }
-
-        public static CombatStats operator -(CombatStats a)
-        {
-            return new CombatStats(-a.Count, -a.Rate, -a.Damage);
-        }
-
-        public static CombatStats operator *(float b, CombatStats a)
-        {
-            return (CombatStats.One * b) * a;
-        }
-
-        public static CombatStats operator -(float b, CombatStats a)
-        {
-            return (CombatStats.One * b) - a;
-        }
-
-        public CombatStats Power(float pow)
-        {
-            return Power(One * pow);
-        }
-
-        public CombatStats Power(CombatStats pow)
-        {
-            return new CombatStats(
-                Mathf.Pow(Count, pow.Count),
-                Mathf.Pow(Rate, pow.Rate),
-                Mathf.Pow(Damage, pow.Damage)
-            );
-        }
-    }
-
-
-    public string IconName {get; set;}
-    public string ResourceName {get; set;}
-    public ActionType Action {get; set;}
-    public ObjectType ManipulatedObject {get; set;}
-
-
-    public CombatStats StatsBase {get; set;}
-    public CombatStats StatsSpreadSafePercent {get; set;}
-    public CombatStats StatsPowerScaling {get; set;}
-    public int SimultaneousShoots {get; set;} = 1;
-    public float SimultaneousAngleCoverage = 45f;
-    public float Speed {get; set;} = 10f;
-    public bool CollideWithWorld {get; set;} = false;
-    public int BounceLife {get; set;} = 4;
-    public bool DieOnHit {get; set;} = false;
-    public float Lifetime {get; set;} = 1f;
-
-
-    public float IntensityValue {get; set;}
-
-    public string Name {get; set;}
-
-
-    public Texture GetIcon()
-    {
-        return ResourceLoader.Load<Texture>($"res://dicedhead/sprites/abilities/{IconName}.png");
-    }
-
-    public CombatStats GetRealStats(int spread, float intensity)
-    {
-        var spreadMultiplier = StatsSpreadSafePercent + (1 - StatsSpreadSafePercent) * (1f/spread);
-        if (IntensityValue <= 0)
-            return (StatsBase * intensity).Power(StatsPowerScaling) * spreadMultiplier;
+        if (_internalData.Contains(key))
+            return (T)_internalData[key];
         else
-            return StatsBase * spreadMultiplier;
+            return defaultValue;
     }
 
-    public string GetEffectOneLine(int spread, float intensity)
+    protected ArithmeticDictionary GetArithDict(string key)
     {
-        string result = "";
-        result += ActionTypeToVerb(Action);
-        var stats = GetRealStats(spread, intensity);
-        result += $" {Math.Round(stats.Count * stats.Damage, 1)} ";
-        result += $"{ObjectTypeToString(ManipulatedObject).ToLower()}";
-
-        return result;
+        var dict = (Godot.Collections.Dictionary)_internalData[key];
+        var typedDict = dict.Keys.Cast<string>().ToDictionary(k=>k, k => (float)dict[k]);
+        return new ArithmeticDictionary(typedDict);
     }
 
-    public PackedScene GetPackedScene()
+    protected ArithmeticDictionary GetArithDict(string key, ArithmeticDictionary defaultValue)
     {
-        return ResourceLoader.Load<PackedScene>($"res://dicedhead/nodes/abilities/{ResourceName}/{ResourceName}.tscn");
+        if (_internalData.Contains(key))
+        {
+            var dict = (Godot.Collections.Dictionary)_internalData[key];
+            var typedDict = dict.Keys.Cast<string>().ToDictionary(k=>k, k => (float)dict[k]);
+            return new ArithmeticDictionary(typedDict, defaultValue);
+        }
+        else
+            return defaultValue;
     }
 
-    private string ActionTypeToVerb(ActionType action)
+
+    public static IDictionary LoadDictFromJsonString(string json)
     {
-        if (Action == ActionType.Shoot)
-            return "Shoots";
-        else if (Action == ActionType.Slash)
-            return "Slashes";
-        return "??";
+        var parseResult = JSON.Parse(json);
+        var result = parseResult.Result;
+        if (!(result is Godot.Collections.Dictionary dict))
+            throw new ArgumentException("json is not a dictionary");
+
+        if (dict.Contains(ParentKey))
+        {
+            var dict2 = LoadDictFromInternalFile((string)dict[ParentKey]);
+            foreach (var key in dict2.Keys)
+            {
+                if (!dict.Contains(key))
+                    dict[key] = dict2[key];
+            }
+        }
+
+        return dict;
     }
 
-    private string ObjectTypeToString(ObjectType obj)
+    public static IDictionary LoadDictFromInternalFile(string id)
     {
-        return obj.ToString();
+        var file = new File();
+        var err = file.Open($"{InternalJsonFilesLocation}/{id}.json", File.ModeFlags.Read);
+        return LoadDictFromJsonString(file.GetAsText());
     }
 }

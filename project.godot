@@ -21,6 +21,7 @@ InputUtils="*res://dicedhead/scripts/utils/InputUtils.cs"
 AbilitySingleton="*res://dicedhead/scripts/singletons/attacksingleton/AbilityPool.tscn"
 HeroState="*res://dicedhead/scripts/singletons/herostate/HeroState.cs"
 Hero="*res://dicedhead/nodes/hero/hero.tscn"
+AbilityLoaderV2="*res://dicedhead/scripts/data/AbilityLoaderV2.cs"
 
 [display]
 

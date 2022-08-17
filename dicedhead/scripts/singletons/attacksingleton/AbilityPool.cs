@@ -16,34 +16,31 @@ public class AbilityPool : Node
             Free();
         Singleton = this;
 
-        GD.Print("test");
         _poolNode = GetNode<Node2D>("Pool");
         foreach (string id in AbilityLoader.GetIds())
         {
             var data = AbilityLoader.GetAbility(id);
-            _freePools[data.ResourceName] = new List<Ability>();
-            _busyPools[data.ResourceName] = new List<Ability>();
+            _freePools[data.NodeResourceName] = new List<Ability>();
+            _busyPools[data.NodeResourceName] = new List<Ability>();
         }
     }
 
-    public Ability GetAbility(AbilityData data)
+    public Ability GetPooledAbility(AbilityData data)
     {
-        var key = data.ResourceName;
+        var key = data.NodeResourceName;
 
         if (_freePools[key].Count > 0)
         {
             var existingAbility = _freePools[key][0];
             _freePools[key].RemoveAt(0);
             _busyPools[key].Add(existingAbility);
-            existingAbility.AbilityData = data;
             return existingAbility;
         }
         else
         {
             // var data = AbilityLoader.GetAbility(id);
-            var packed = data.GetPackedScene();
+            var packed = data.NodeResourcePacked;
             var ability = packed.Instance<Ability>();
-            ability.AbilityData = data;
             _busyPools[key].Add(ability);
             ability.Connect(nameof(Ability.AbilityEnded), this, nameof(OnAbilityEnded), new Godot.Collections.Array() {ability});
             _poolNode.AddChild(ability);
@@ -53,12 +50,12 @@ public class AbilityPool : Node
 
     public Ability GetAbility(string id)
     {
-        return GetAbility(AbilityLoader.GetAbility(id));
+        return GetPooledAbility(AbilityLoader.GetAbility(id));
     }
 
     private void OnAbilityEnded(Ability ability)
     {
-        _busyPools[ability.AbilityData.ResourceName].Remove(ability);
-        _freePools[ability.AbilityData.ResourceName].Add(ability);
+        _busyPools[ability.AbilityData.NodeResourceName].Remove(ability);
+        _freePools[ability.AbilityData.NodeResourceName].Add(ability);
     }
 }

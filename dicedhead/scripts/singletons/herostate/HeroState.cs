@@ -13,13 +13,14 @@ public class HeroState : Node
 
     public static HeroState Singleton {get; private set;}
 
+
+    public DiceState DiceState {get; private set;} = new DiceState(6);
     public int Kills {get; private set;} = 0;
     public int UnlockLevel {get; private set;} = 0;
 
+
     private HashSet<string> _unlockedAbilities = new HashSet<string>();
 
-    private Dictionary<string, AbilityData.CombatStats> _cachedFinalStats;
-    public string[] _diceAbilities;
 
     public override void _Ready()
     {
@@ -31,36 +32,8 @@ public class HeroState : Node
         // for (int i = 0; i < 4; ++i)
         //     UnlockAbilitiesAtLevel(i);
 
-        ChooseAbilities(new string[6] {"bonus_dice1","bonus_dice1","bonus_dice1","malus_dice1","malus_dice1","malus_dice1"});
+        DiceState.ChooseAbilities(new string[6] {"bonus_dice1","bonus_dice1","bonus_dice1","malus_dice1","malus_dice1","malus_dice1"});
     }
-
-    public void ChooseAbilities(IEnumerable<string> abilities)
-    {
-        GD.Print($"abilities = {abilities.Count()}");
-
-        var intensity = PowerEngine.GetIntensity(abilities);
-        var spread = PowerEngine.GetSpread(abilities);
-
-        _cachedFinalStats = new Dictionary<string, AbilityData.CombatStats>();
-        foreach(var id in abilities)
-        {
-            var data = AbilityLoader.GetAbility(id);
-            _cachedFinalStats[id] = data.GetRealStats(spread[id], intensity);
-        }
-
-        _diceAbilities = abilities.ToArray();
-    }
-
-    public string GetDiceAbility(int rollNumber)
-    {
-        return _diceAbilities[rollNumber];
-    }
-
-    public AbilityData.CombatStats GetFinalStats(int rollNumber)
-    {
-        return _cachedFinalStats[GetDiceAbility(rollNumber)];
-    }
-
 
     public void UnlockAbilitiesAtLevel(int level)
     {
