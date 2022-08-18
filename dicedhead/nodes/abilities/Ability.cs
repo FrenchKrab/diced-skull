@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public abstract class Ability : KinematicBody2D
+public abstract class Ability : KinematicBody2D, ICastableAbility
 {
     [Signal]
     public delegate void AbilityEnded();
@@ -26,9 +26,12 @@ public abstract class Ability : KinematicBody2D
         Scaling = scaling;
     }
 
-    public virtual void Cast(Vector2 position, Vector2 direction, Team targetTeam = Team.None)
+    public virtual void Cast(Node2D source = null, Vector2? position = null, Vector2? direction = null, Team targetTeam = Team.None)
     {
-        GlobalPosition = position;
+        if (source != null)
+            source.AddChild(this);
+        if (position != null)
+            GlobalPosition = (Vector2)position;
         TargetTeam = targetTeam;
         Visible = true;
     }
@@ -52,4 +55,5 @@ public abstract class Ability : KinematicBody2D
         Hitbox.SetCollisionMaskBit(1, damagePlayer);
         Hitbox.SetCollisionMaskBit(2, damageMonsters);
     }
+
 }

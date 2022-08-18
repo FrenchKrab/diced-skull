@@ -24,8 +24,6 @@ public class DiceComposition : Control
 
     public override void _Ready()
     {
-
-
         Singleton = this;
 
         SetupAbilityHolders();
@@ -83,8 +81,8 @@ public class DiceComposition : Control
         _splashReadyControl.Visible = false;
         _splashOutAudio.Play();
         this.Visible = false;
-        GD.Print(GetSelectedAbilities().Count);
-        HeroState.Singleton.ChooseAbilities(GetSelectedAbilities());
+
+        HeroState.Singleton.DiceState.ChooseAbilities(GetSelectedAbilities());
     }
 
     private void SplashCancel()

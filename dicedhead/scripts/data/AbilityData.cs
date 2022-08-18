@@ -26,8 +26,9 @@ public abstract class AbilityData
     public Type Class => Type.GetType(ClassName);
     public Texture IconTexture => ResourceLoader.Load<Texture>($"{AbilityIconLocation}/{IconName}.png");
     public float IntensityValue => Get<float>("intensity", 0f);
-    public string NodeResourceName => Get<string>("resource");
-    public PackedScene NodeResourcePacked => ResourceLoader.Load<PackedScene>(NodeResourceName);
+    public string PooledResourceName => Get<string>("resource");
+    public PackedScene PooledResourcePacked => ResourceLoader.Load<PackedScene>(PooledResourceName);
+    public abstract PackedScene CastablePacked {get;}
 
 
     public abstract float GetEstimatedAttack(IAbilityScalingFactors state);

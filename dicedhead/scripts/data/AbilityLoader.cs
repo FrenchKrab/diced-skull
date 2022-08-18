@@ -62,5 +62,4 @@ public class AbilityLoader : Node
     {
         return Singleton._abilities[id];
     }
-
 }

@@ -22,15 +22,15 @@ public class SwordAbility : Ability
         _timer.Connect("timeout", this, nameof(MarkEnded));
     }
 
-    public override void Cast(Vector2 position, Vector2 direction, Team targetTeam)
+    public override void Cast(Node2D source = null, Vector2? position = null, Vector2? direction = null, Team targetTeam = Team.None)
     {
-        base.Cast(position, direction, targetTeam);
+        base.Cast(source, position, direction, targetTeam);
         // TODO : MAKE THIS WORK
         // _timer.Start(AbilityData.Lifetime);
         _animationPlayer.Play("slash");
         _slashAudio.Play();
         UpdateTeam();
-        LookAt(GlobalPosition + direction);
+        LookAt(GlobalPosition + (Vector2)direction);
     }
 
     protected override void MarkEnded()

@@ -68,7 +68,6 @@ public class Monster : KinematicBody2D
 
     private void OnTookDamage(float damages)
     {
-        GD.Print("Monster took damages !");
         ApplyDamage(damages);
     }
 
@@ -88,12 +87,11 @@ public class Monster : KinematicBody2D
             abilityNumber = _lastCastAbility;
         }
 
-        var caster = _abilityCasterPacked.Instance<AutoCaster>();
-        var data = AbilityLoader.GetAbility(Abilities[abilityNumber]);
-        AddChild(caster);
-        caster.SetupAbility(data, new DummyAbilityScalingFactors(Intensity));
-        caster.LockOnTarget = _target;
-        caster.Cast(Team.Hero);
+        AbilityData data = AbilityLoader.GetAbility(Abilities[abilityNumber]);
+        var castable = data.CastablePacked.Instance<ICastableAbility>();
+        castable.SetupData(data, new DummyAbilityScalingFactors(Intensity));
+        // caster.LockOnTarget = _target;
+        castable.Cast(this, targetTeam:Team.Hero);
     }
 
     private void OnBodyEnterDetectionRadius(Node body)

@@ -86,14 +86,18 @@ public class ProjectileAbility : Ability
     }
 
 
-    public override void Cast(Vector2 position, Vector2 direction, Team targetTeam)
+    public override void Cast(Node2D source = null, Vector2? position = null, Vector2? direction = null, Team targetTeam = Team.None)
     {
-        base.Cast(position, direction, targetTeam);
+        base.Cast(source, position, direction, targetTeam);
         ResetState();
 
         Damage = ScaledStats.Damage;
         Speed = ProjectileData.InitialSpeed;
-        Velocity = direction.Normalized() * Speed;
+
+        if (direction == null)
+            direction = Vector2.Up;
+
+        Velocity = ((Vector2)direction).Normalized() * Speed;
         _fireAudio.Play();
         if (ProjectileData.Lifetime > 0)
         {

@@ -26,6 +26,7 @@ public class GenericProjectileData : AutoCastableAbilityData
         public new static ArithmeticDictionary DictZero => DictOne.Zero;
     }
 
+    private const string AutoCasterPath = "res://dicedhead/nodes/abilities/AutoCaster.tscn";
 
     public float InitialSpeed => Get<float>("speed", 10f);
     public float TerminalSpeed => Get<float>("speed_terminal", InitialSpeed);
@@ -33,6 +34,7 @@ public class GenericProjectileData : AutoCastableAbilityData
     public int HitCount => Get<int>("hits", 1);
     public float Lifetime => Get<float>("lifetime", 1f);
 
+    public override PackedScene CastablePacked => ResourceLoader.Load<PackedScene>(AutoCasterPath);
 
     public new readonly Stats BaseStats;
     public new readonly Stats StatsIntensityGrowth;

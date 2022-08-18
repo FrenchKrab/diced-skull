@@ -128,23 +128,23 @@ public class Hero : KinematicBody2D, IDamageable
         _abilityDelayTimer.Stop();
         EmitSignal(nameof(RollEnd));
 
-        var caster = _abilityCasterPacked.Instance<AutoCaster>();
-        var data = AbilityLoader.GetAbility(HeroState.Singleton.GetDiceAbility(_roll));
+        AbilityData data = HeroState.Singleton.DiceState.GetRollAbilityData(_roll);
+
+        var castable = data.CastablePacked.Instance<ICastableAbility>();
+        castable.SetupData(data, HeroState.Singleton.DiceState);
 
         if (data.IntensityValue > 0)
         {
-            caster.LockOnTarget = this;
+            // caster.LockOnTarget = this;
 
-            GetTree().Root.AddChild(caster);
+            GetTree().Root.AddChild((Node)castable);
             float randAngle = _rng.Randf() * Mathf.Pi*2;
-            caster.GlobalPosition = GlobalPosition +  Vector2.One.Rotated(randAngle) * 250f;
-            GD.Print(caster.GlobalPosition);
+            var position = GlobalPosition +  Vector2.One.Rotated(randAngle) * 250f;
+            castable.Cast(position:position,direction:(position-GlobalPosition).Normalized(),targetTeam:Team.Hero);
         }
         else
         {
-            GetNode<Node2D>("Cursor").AddChild(caster);
+            castable.Cast(GetNode<Node2D>("Cursor"), targetTeam:Team.Monsters);
         }
-        caster.SetupAbility(data, HeroState.Singleton.DiceState);
-        caster.Cast();
     }
 }

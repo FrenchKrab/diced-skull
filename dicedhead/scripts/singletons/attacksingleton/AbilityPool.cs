@@ -20,14 +20,14 @@ public class AbilityPool : Node
         foreach (string id in AbilityLoader.GetIds())
         {
             var data = AbilityLoader.GetAbility(id);
-            _freePools[data.NodeResourceName] = new List<Ability>();
-            _busyPools[data.NodeResourceName] = new List<Ability>();
+            _freePools[data.PooledResourceName] = new List<Ability>();
+            _busyPools[data.PooledResourceName] = new List<Ability>();
         }
     }
 
     public Ability GetPooledAbility(AbilityData data)
     {
-        var key = data.NodeResourceName;
+        var key = data.PooledResourceName;
 
         if (_freePools[key].Count > 0)
         {
@@ -39,7 +39,7 @@ public class AbilityPool : Node
         else
         {
             // var data = AbilityLoader.GetAbility(id);
-            var packed = data.NodeResourcePacked;
+            var packed = data.PooledResourcePacked;
             var ability = packed.Instance<Ability>();
             _busyPools[key].Add(ability);
             ability.Connect(nameof(Ability.AbilityEnded), this, nameof(OnAbilityEnded), new Godot.Collections.Array() {ability});
@@ -55,7 +55,7 @@ public class AbilityPool : Node
 
     private void OnAbilityEnded(Ability ability)
     {
-        _busyPools[ability.AbilityData.NodeResourceName].Remove(ability);
-        _freePools[ability.AbilityData.NodeResourceName].Add(ability);
+        _busyPools[ability.AbilityData.PooledResourceName].Remove(ability);
+        _freePools[ability.AbilityData.PooledResourceName].Add(ability);
     }
 }
